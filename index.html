@@ -1,0 +1,37 @@
+<html>
+<head>
+	<meta charset='utf-8'>
+	<title>CJK Decomp Data</title>
+	<script type="text/javascript" src="jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="d3.v3.min.js"></script>
+	<script type="text/javascript" src="script.js"></script>
+	<style>
+		.link{
+			fill: none;
+			stroke: #ccc;
+			stroke-width: 1.5px;
+		}
+
+		.circle{
+			stroke-width: 1.2px;
+			fill: white;
+		}
+
+		.text{
+			text-anchor: middle;
+			font-size: 15px;
+		}
+	</style>
+</head>
+<body>
+	<div>
+	</div>
+	<div>
+		Enter character:
+		<input id="char" type="text" value="阿" size="1"></input>
+		<input id="submit" type="submit" value="Show tree"/>
+	</div>
+	<div id="svg"></div>
+</body>
+
+</html>
