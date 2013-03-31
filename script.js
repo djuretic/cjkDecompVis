@@ -84,6 +84,8 @@ function clean_line(line){
 function parse_decomposition_data(data){
 	var lines = data.split('\r\n');
 	for(var i=0;i<lines.length;i++){
+		if(lines[i].length === 0) continue;
+
 		var row_data = clean_line(lines[i]).split(",");
 		var character = row_data[0];
 		var decomposition_type = row_data[1];
@@ -95,7 +97,8 @@ function parse_decomposition_data(data){
 		}
 		decomp[character] = {
 			character: character,
-			type: decomposition_type,
+			type: decomposition_type[0],
+			type_full: decomposition_type,
 			components: components
 		};
 	}
