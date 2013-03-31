@@ -14,6 +14,12 @@ var scale = d3.scale.category10();
 
 function get_decomposition(character){
 	var character_decomp = decomp[character];
+	if(!character_decomp){
+		return {
+			character: character,
+			has_char: true
+		};
+	}
 	var children = [];
 	if(character_decomp.components){
 		character_decomp.components.forEach(function(component){
@@ -116,7 +122,7 @@ $(function(){
 		parse_decomposition_data(data);
 		$("#submit")
 			.prop('disabled', false)
-			.click(function() {	update($("#char").val()); });
+			.click(function() {	update($("#char").val()[0]); });
 	});
 
 
