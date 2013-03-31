@@ -6,9 +6,6 @@ var width = 350,
 
 var svg;
 
-var tree = d3.layout.tree()
-	.size([width, height - 2*(node_radius+1) ]);
-
 var link = d3.svg.diagonal();
 var scale = d3.scale.category10();
 
@@ -74,10 +71,22 @@ function drawNodes(nodes){
 }
 
 function update(character){
-	var nodes = tree.nodes(get_decomposition(character));
+	var character_decomp = get_decomposition(character);
+	var depth = getDepth(character_decomp);
+
+	var tree = d3.layout.tree()
+		.size([width, Math.min(40*depth, height - 2*(node_radius+1)) ]);
+	var nodes = tree.nodes(character_decomp);
 	var links = tree.links(nodes);
 	drawLinks(links);
 	drawNodes(nodes);
+}
+
+function getDepth(data){
+	if(!data.children || data.children.length === 0){
+		return 1;
+	}
+	return Math.max.apply(null, data.children.map(function(c) { return getDepth(c); })) + 1;
 }
 
 function clean_line(line){
