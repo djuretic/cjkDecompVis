@@ -12,12 +12,12 @@ var tree = d3.layout.tree()
 var link = d3.svg.diagonal();
 var scale = d3.scale.category10();
 
-function prepare_data(character){
+function get_decomposition(character){
 	var character_decomp = decomp[character];
 	var children = [];
 	if(character_decomp.components){
 		character_decomp.components.forEach(function(component){
-			children.push(prepare_data(component));
+			children.push(get_decomposition(component));
 		});
 	}
 	return {
@@ -68,7 +68,7 @@ function drawNodes(nodes){
 }
 
 function update(character){
-	var nodes = tree.nodes(prepare_data(character));
+	var nodes = tree.nodes(get_decomposition(character));
 	var links = tree.links(nodes);
 	drawLinks(links);
 	drawNodes(nodes);
@@ -109,15 +109,13 @@ $(function(){
 	.append("g")
 	.attr("transform", "translate(0,"+ (node_radius+1) +")");
 
-
 	$.get("cjk-decomp-0.4.0.txt", function(data){
 		parse_decomposition_data(data);
-
+		$("#submit")
+			.prop('disabled', false)
+			.click(function() {	update($("#char").val()); });
 	});
 
-	$("#submit").click(function() {
-		update($("#char").val());
-	});
 
 });
 
