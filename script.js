@@ -2,28 +2,37 @@
 var width = 350,
     height = 500,
     decomp = {},
-    node_radius = 12;
+    node_radius = 12,
+    animation_delay = 1000;
 
 var svg;
 
 var link = d3.svg.diagonal();
 var scale = d3.scale.category10();
 
-function get_decomposition(character){
+function get_decomposition(character, base_id){
 	var character_decomp = decomp[character];
 	if(!character_decomp){
 		return {
+			id: base_id,
+			max_id: base_id,
 			character: character,
 			has_char: true
 		};
 	}
-	var children = [];
+	var children = [],
+		max_id = base_id;
 	if(character_decomp.components){
 		character_decomp.components.forEach(function(component){
-			children.push(get_decomposition(component));
+			max_id++;
+			child_decomp = get_decomposition(component, max_id);
+			max_id = child_decomp.max_id;
+			children.push(child_decomp);
 		});
 	}
 	return {
+		id: base_id,
+		max_id: max_id,
 		character: character,
 		type: character_decomp.type,
 		type_full: character_decomp.type_full,
@@ -34,24 +43,27 @@ function get_decomposition(character){
 
 function drawLinks(links){
 	link_sel = svg.selectAll(".link")
-		.data(links);
+		.data(links, function(d){ return d.source.id + "-" + d.target.id; });
 
 	link_sel.enter()
 		.insert("path", ":first-child")  //to avoid overlap with nodes
-		.attr("class", "link");
-	link_sel.attr("d", link);
+		.attr("class", "link")
+		.attr("d", link({source: {x:0, y:0}, target: {x:0, y:0}}));
+	link_sel.transition()
+		.duration(animation_delay)
+		.attr("d", link);
 	link_sel.exit().remove();
 }
 
 function drawNodes(nodes){
 	var node_sel = svg.selectAll(".node")
-		.data(nodes);
+		.data(nodes, function(d){ return d.id; });
 
 	var node = node_sel.enter()
 		.append("g")
 		.attr("class", "node")
 		.on("click", function(d){
-			update(d.character);
+			update(d.character, d.id);
 		});
 
 	node.append("circle")
@@ -72,12 +84,16 @@ function drawNodes(nodes){
 	node_sel.select(".circle")
 		.attr("stroke", function(d) { return scale(d.type); });
 
-	node_sel.attr("transform", function(d) { return "translate(" + d.x + ","+ d.y +")"; });
+	node_sel.transition()
+		.duration(animation_delay)
+		.attr("transform", function(d) { return "translate(" + d.x + ","+ d.y +")"; });
 	node_sel.exit().remove();
 }
 
-function update(character){
-	var character_decomp = get_decomposition(character);
+function update(character, base_id){
+	base_id = typeof base_id !== 'undefined' ? base_id : 1;
+
+	var character_decomp = get_decomposition(character, base_id);
 	var depth = getDepth(character_decomp);
 
 	var tree = d3.layout.tree()
