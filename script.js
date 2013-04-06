@@ -26,6 +26,7 @@ function get_decomposition(character){
 	return {
 		character: character,
 		type: character_decomp.type,
+		type_full: character_decomp.type_full,
 		has_char: character.length <= 1,
 		children: children
 	};
@@ -61,8 +62,13 @@ function drawNodes(nodes){
 		.attr("class", "text")
 		.attr("dy", ".3em");
 
+	node.append("title")
+		.attr("class", "title");
+
 	node_sel.select(".text")
 		.text(function(d) { return d.has_char ? d.character : "?"; });
+	node_sel.select(".title")
+		.text(function(d){ return d.type_full; });
 	node_sel.select(".circle")
 		.attr("stroke", function(d) { return scale(d.type); });
 
