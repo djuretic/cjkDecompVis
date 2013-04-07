@@ -48,20 +48,30 @@ function drawLinks(links){
 	link_sel.enter()
 		.insert("path", ":first-child")  //to avoid overlap with nodes
 		.attr("class", "link")
-		.attr("d", link({source: {x:0, y:0}, target: {x:0, y:0}}));
+		.attr("d", function(d){
+			return link({
+				source: {x: d.source.x - width, y: d.source.y},
+				target: {x: d.target.x - width, y: d.target.y}
+			});
+		});
 	link_sel.transition()
 		.duration(animation_delay)
 		.attr("d", link);
-	link_sel.exit().remove();
+	link_sel.exit()
+		.transition()
+		.duration(animation_delay/2)
+		.style("opacity", 0.1)
+		.remove();
 }
 
 function drawNodes(nodes){
-	var node_sel = svg.selectAll(".node")
+	var nodeSel = svg.selectAll(".node")
 		.data(nodes, function(d){ return d.id; });
 
-	var node = node_sel.enter()
+	var node = nodeSel.enter()
 		.append("g")
 		.attr("class", "node")
+		.attr("transform", function(d) { return "translate(" + (d.x - width) + ","+ d.y +")"; })
 		.on("click", function(d){
 			update(d.character, d.id);
 		});
@@ -77,17 +87,22 @@ function drawNodes(nodes){
 	node.append("title")
 		.attr("class", "title");
 
-	node_sel.select(".text")
+	nodeSel.select(".text")
 		.text(function(d) { return d.has_char ? d.character : "?"; });
-	node_sel.select(".title")
+	nodeSel.select(".title")
 		.text(function(d){ return d.type_full; });
-	node_sel.select(".circle")
+	nodeSel.select(".circle")
 		.attr("stroke", function(d) { return scale(d.type); });
 
-	node_sel.transition()
+	nodeSel.transition()
 		.duration(animation_delay)
 		.attr("transform", function(d) { return "translate(" + d.x + ","+ d.y +")"; });
-	node_sel.exit().remove();
+
+	nodeSel.exit()
+		.transition()
+		.duration(animation_delay/2)
+		.style("opacity", 0.1)
+		.remove();
 }
 
 function update(character, base_id){
