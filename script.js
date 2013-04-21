@@ -14,7 +14,7 @@ if(horizontal_tree){
 }
 var scale = d3.scale.category10();
 
-function get_decomposition(character, base_id){
+function getDecomposition(character, base_id){
 	var character_decomp = decomp[character];
 	if(!character_decomp){
 		return {
@@ -29,7 +29,7 @@ function get_decomposition(character, base_id){
 	if(character_decomp.components){
 		character_decomp.components.forEach(function(component){
 			max_id++;
-			child_decomp = get_decomposition(component, max_id);
+			child_decomp = getDecomposition(component, max_id);
 			max_id = child_decomp.max_id;
 			children.push(child_decomp);
 		});
@@ -118,7 +118,7 @@ function drawNodes(nodes){
 function update(character, base_id){
 	base_id = typeof base_id !== 'undefined' ? base_id : 1;
 
-	var character_decomp = get_decomposition(character, base_id);
+	var character_decomp = getDecomposition(character, base_id);
 	var depth = getDepth(character_decomp);
 
 	var tree = d3.layout.tree()
@@ -136,19 +136,32 @@ function getDepth(data){
 	return Math.max.apply(null, data.children.map(function(c) { return getDepth(c); })) + 1;
 }
 
-function clean_line(line){
+function DataParser(url, callback){
+	this.url = url;
+	this.callback = callback;
+}
+
+DataParser.prototype.parse = function() {
+	var parser = this;
+	$.get(this.url, function(data){
+		parser.parseDecompositionData(data);
+		parser.callback();
+	});
+};
+
+DataParser.prototype.cleanLine = function(line){
 	line = line.replace(":", ",");
 	line = line.replace("(", ",");
 	line = line.replace(")", "");
 	return line;
-}
+};
 
-function parse_decomposition_data(data){
+DataParser.prototype.parseDecompositionData = function(data){
 	var lines = data.split('\r\n');
 	for(var i=0;i<lines.length;i++){
 		if(lines[i].length === 0) continue;
 
-		var row_data = clean_line(lines[i]).split(",");
+		var row_data = this.cleanLine(lines[i]).split(",");
 		var character = row_data[0];
 		var decomposition_type = row_data[1];
 		var components = [];
@@ -164,8 +177,7 @@ function parse_decomposition_data(data){
 			components: components
 		};
 	}
-}
-
+};
 
 $(function(){
 	svg = d3.select("#svg").append("svg")
@@ -175,14 +187,11 @@ $(function(){
 	.attr("transform", horizontal_tree ?
 		"translate(" +(node_radius+1) +",0)" : "translate(0,"+ (node_radius+1) +")");
 
-	$.get("cjk-decomp-0.4.0.txt", function(data){
-		parse_decomposition_data(data);
+	new DataParser("cjk-decomp-0.4.0.txt", function() {
 		$("#submit")
 			.prop('disabled', false)
 			.click(function() {	update($("#char").val()[0]); });
-	});
-
-
+	}).parse();
 });
 
 
