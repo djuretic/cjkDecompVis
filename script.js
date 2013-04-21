@@ -2,54 +2,54 @@
 var width = 350,
     height = 500,
     decomp = {},
-    node_radius = 12,
-    animation_delay = 1000,
-    horizontal_tree = false;
+    nodeRadius = 12,
+    animationDelay = 1000,
+    horizontalTree = false;
 
 var svg;
 
 var link = d3.svg.diagonal();
-if(horizontal_tree){
+if(horizontalTree){
 	link = link.projection(function(d) { return [d.y, d.x]; });
 }
 var scale = d3.scale.category10();
 
-function getDecomposition(character, base_id){
-	var character_decomp = decomp[character];
-	if(!character_decomp){
+function getDecomposition(character, baseId){
+	var characterDecomp = decomp[character];
+	if(!characterDecomp){
 		return {
-			id: base_id,
-			max_id: base_id,
+			id: baseId,
+			maxId: baseId,
 			character: character,
-			has_char: true
+			hasChar: true
 		};
 	}
 	var children = [],
-		max_id = base_id;
-	if(character_decomp.components){
-		character_decomp.components.forEach(function(component){
-			max_id++;
-			child_decomp = getDecomposition(component, max_id);
-			max_id = child_decomp.max_id;
-			children.push(child_decomp);
+		maxId = baseId;
+	if(characterDecomp.components){
+		characterDecomp.components.forEach(function(component){
+			maxId++;
+			childDecomp = getDecomposition(component, maxId);
+			maxId = childDecomp.maxId;
+			children.push(childDecomp);
 		});
 	}
 	return {
-		id: base_id,
-		max_id: max_id,
+		id: baseId,
+		maxId: maxId,
 		character: character,
-		type: character_decomp.type,
-		type_full: character_decomp.type_full,
-		has_char: character.length <= 1,
+		type: characterDecomp.type,
+		typeFull: characterDecomp.typeFull,
+		hasChar: character.length <= 1,
 		children: children
 	};
 }
 
 function drawLinks(links){
-	link_sel = svg.selectAll(".link")
+	linkSel = svg.selectAll(".link")
 		.data(links, function(d){ return d.source.id + "-" + d.target.id; });
 
-	link_sel.enter()
+	linkSel.enter()
 		.insert("path", ":first-child")  //to avoid overlap with nodes
 		.attr("class", "link")
 		.attr("d", function(d){
@@ -58,12 +58,12 @@ function drawLinks(links){
 				target: {x: d.target.x - width, y: d.target.y}
 			});
 		});
-	link_sel.transition()
-		.duration(animation_delay)
+	linkSel.transition()
+		.duration(animationDelay)
 		.attr("d", link);
-	link_sel.exit()
+	linkSel.exit()
 		.transition()
-		.duration(animation_delay/2)
+		.duration(animationDelay/2)
 		.style("opacity", 0.1)
 		.remove();
 }
@@ -76,7 +76,7 @@ function drawNodes(nodes){
 		.append("g")
 		.attr("class", "node")
 		.attr("transform", function(d) {
-			return horizontal_tree ?
+			return horizontalTree ?
 				"translate(" + (d.y - width) + ","+ d.x +")" : "translate(" + (d.x - width) + ","+ d.y +")";
 		})
 		.on("click", function(d){
@@ -85,7 +85,7 @@ function drawNodes(nodes){
 
 	node.append("circle")
 		.attr("class", "circle")
-		.attr("r", node_radius);
+		.attr("r", nodeRadius);
 
 	node.append("text")
 		.attr("class", "text")
@@ -95,35 +95,35 @@ function drawNodes(nodes){
 		.attr("class", "title");
 
 	nodeSel.select(".text")
-		.text(function(d) { return d.has_char ? d.character : "?"; });
+		.text(function(d) { return d.hasChar ? d.character : "?"; });
 	nodeSel.select(".title")
-		.text(function(d){ return d.type_full; });
+		.text(function(d){ return d.typeFull; });
 	nodeSel.select(".circle")
 		.attr("stroke", function(d) { return scale(d.type); });
 
 	nodeSel.transition()
-		.duration(animation_delay)
+		.duration(animationDelay)
 		.attr("transform", function(d) {
-			return horizontal_tree ?
+			return horizontalTree ?
 				"translate(" + d.y + ","+ d.x +")" : "translate(" + d.x + ","+ d.y +")";
 		});
 
 	nodeSel.exit()
 		.transition()
-		.duration(animation_delay/2)
+		.duration(animationDelay/2)
 		.style("opacity", 0.1)
 		.remove();
 }
 
-function update(character, base_id){
-	base_id = typeof base_id !== 'undefined' ? base_id : 1;
+function update(character, baseId){
+	baseId = typeof baseId !== 'undefined' ? baseId : 1;
 
-	var character_decomp = getDecomposition(character, base_id);
-	var depth = getDepth(character_decomp);
+	var characterDecomp = getDecomposition(character, baseId);
+	var depth = getDepth(characterDecomp);
 
 	var tree = d3.layout.tree()
-		.size([width, Math.min(40*depth, height - 2*(node_radius+1)) ]);
-	var nodes = tree.nodes(character_decomp);
+		.size([width, Math.min(40*depth, height - 2*(nodeRadius+1)) ]);
+	var nodes = tree.nodes(characterDecomp);
 	var links = tree.links(nodes);
 	drawLinks(links);
 	drawNodes(nodes);
@@ -161,19 +161,19 @@ DataParser.prototype.parseDecompositionData = function(data){
 	for(var i=0;i<lines.length;i++){
 		if(lines[i].length === 0) continue;
 
-		var row_data = this.cleanLine(lines[i]).split(",");
-		var character = row_data[0];
-		var decomposition_type = row_data[1];
+		var rowData = this.cleanLine(lines[i]).split(",");
+		var character = rowData[0];
+		var decompositionType = rowData[1];
 		var components = [];
-		for(var j=2; j<row_data.length; j++){
-			if(row_data[j] !== ""){ // "c" decomposition
-				components.push(row_data[j]);
+		for(var j=2; j<rowData.length; j++){
+			if(rowData[j] !== ""){ // "c" decomposition
+				components.push(rowData[j]);
 			}
 		}
 		decomp[character] = {
 			character: character,
-			type: decomposition_type[0],
-			type_full: decomposition_type,
+			type: decompositionType[0],
+			typeFull: decompositionType,
 			components: components
 		};
 	}
@@ -184,8 +184,8 @@ $(function(){
 	.attr("width", width)
 	.attr("height", height)
 	.append("g")
-	.attr("transform", horizontal_tree ?
-		"translate(" +(node_radius+1) +",0)" : "translate(0,"+ (node_radius+1) +")");
+	.attr("transform", horizontalTree ?
+		"translate(" +(nodeRadius+1) +",0)" : "translate(0,"+ (nodeRadius+1) +")");
 
 	new DataParser("cjk-decomp-0.4.0.txt", function() {
 		$("#submit")
