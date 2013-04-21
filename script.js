@@ -3,11 +3,15 @@ var width = 350,
     height = 500,
     decomp = {},
     node_radius = 12,
-    animation_delay = 1000;
+    animation_delay = 1000,
+    horizontal_tree = false;
 
 var svg;
 
 var link = d3.svg.diagonal();
+if(horizontal_tree){
+	link = link.projection(function(d) { return [d.y, d.x]; });
+}
 var scale = d3.scale.category10();
 
 function get_decomposition(character, base_id){
@@ -71,7 +75,10 @@ function drawNodes(nodes){
 	var node = nodeSel.enter()
 		.append("g")
 		.attr("class", "node")
-		.attr("transform", function(d) { return "translate(" + (d.x - width) + ","+ d.y +")"; })
+		.attr("transform", function(d) {
+			return horizontal_tree ?
+				"translate(" + (d.y - width) + ","+ d.x +")" : "translate(" + (d.x - width) + ","+ d.y +")";
+		})
 		.on("click", function(d){
 			update(d.character, d.id);
 		});
@@ -96,7 +103,10 @@ function drawNodes(nodes){
 
 	nodeSel.transition()
 		.duration(animation_delay)
-		.attr("transform", function(d) { return "translate(" + d.x + ","+ d.y +")"; });
+		.attr("transform", function(d) {
+			return horizontal_tree ?
+				"translate(" + d.y + ","+ d.x +")" : "translate(" + d.x + ","+ d.y +")";
+		});
 
 	nodeSel.exit()
 		.transition()
@@ -162,7 +172,8 @@ $(function(){
 	.attr("width", width)
 	.attr("height", height)
 	.append("g")
-	.attr("transform", "translate(0,"+ (node_radius+1) +")");
+	.attr("transform", horizontal_tree ?
+		"translate(" +(node_radius+1) +",0)" : "translate(0,"+ (node_radius+1) +")");
 
 	$.get("cjk-decomp-0.4.0.txt", function(data){
 		parse_decomposition_data(data);
