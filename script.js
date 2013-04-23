@@ -1,17 +1,13 @@
 
-var width = 350,
-    height = 500,
-    decomp = {},
-    nodeRadius = 12,
-    animationDelay = 1000,
-    horizontalTree = false;
+var width = 900,
+	height = 500,
+	decomp = {},
+	nodeRadius = 12,
+	animationDelay = 250;
 
-var svg;
+var svg, force;
+var link = d3.svg.line();
 
-var link = d3.svg.diagonal();
-if(horizontalTree){
-	link = link.projection(function(d) { return [d.y, d.x]; });
-}
 var scale = d3.scale.category10();
 
 function getDecomposition(character, baseId){
@@ -47,25 +43,11 @@ function getDecomposition(character, baseId){
 
 function drawLinks(links){
 	linkSel = svg.selectAll(".link")
-		.data(links, function(d){ return d.source.id + "-" + d.target.id; });
-
+			.data(links, function(d){ return d.source.id + "-" + d.target.id; });
 	linkSel.enter()
-		.insert("path", ":first-child")  //to avoid overlap with nodes
-		.attr("class", "link")
-		.attr("d", function(d){
-			return link({
-				source: {x: d.source.x - width, y: d.source.y},
-				target: {x: d.target.x - width, y: d.target.y}
-			});
-		});
-	linkSel.transition()
-		.duration(animationDelay)
-		.attr("d", link);
-	linkSel.exit()
-		.transition()
-		.duration(animationDelay/2)
-		.style("opacity", 0.1)
-		.remove();
+		.insert("line", ":first-child")  //to avoid overlap with nodes
+		.attr("class", "link");
+	linkSel.exit().remove();
 }
 
 function drawNodes(nodes){
@@ -75,13 +57,7 @@ function drawNodes(nodes){
 	var node = nodeSel.enter()
 		.append("g")
 		.attr("class", "node")
-		.attr("transform", function(d) {
-			return horizontalTree ?
-				"translate(" + (d.y - width) + ","+ d.x +")" : "translate(" + (d.x - width) + ","+ d.y +")";
-		})
-		.on("click", function(d){
-			update(d.character, d.id);
-		});
+		.call(force.drag);
 
 	node.append("circle")
 		.attr("class", "circle")
@@ -101,16 +77,9 @@ function drawNodes(nodes){
 	nodeSel.select(".circle")
 		.attr("stroke", function(d) { return scale(d.type); });
 
-	nodeSel.transition()
-		.duration(animationDelay)
-		.attr("transform", function(d) {
-			return horizontalTree ?
-				"translate(" + d.y + ","+ d.x +")" : "translate(" + d.x + ","+ d.y +")";
-		});
-
 	nodeSel.exit()
 		.transition()
-		.duration(animationDelay/2)
+		.duration(animationDelay)
 		.style("opacity", 0.1)
 		.remove();
 }
@@ -125,8 +94,26 @@ function update(character, baseId){
 		.size([width, Math.min(40*depth, height - 2*(nodeRadius+1)) ]);
 	var nodes = tree.nodes(characterDecomp);
 	var links = tree.links(nodes);
+
+	force = d3.layout.force()
+		.size([width, height])
+		.charge(-400)
+		.nodes(nodes)
+		.links(links)
+		.on("tick", tick)
+		.start();
+
 	drawLinks(links);
 	drawNodes(nodes);
+}
+
+function tick(){
+	svg.selectAll(".link")
+		.attr("x1", function(d) { return d.source.x; })
+		.attr("y1", function(d) { return d.source.y; })
+		.attr("x2", function(d) { return d.target.x; })
+		.attr("y2", function(d) { return d.target.y; });
+	svg.selectAll(".node").attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 }
 
 function getDepth(data){
@@ -183,9 +170,7 @@ $(function(){
 	svg = d3.select("#svg").append("svg")
 	.attr("width", width)
 	.attr("height", height)
-	.append("g")
-	.attr("transform", horizontalTree ?
-		"translate(" +(nodeRadius+1) +",0)" : "translate(0,"+ (nodeRadius+1) +")");
+	.append("g");
 
 	new DataParser("cjk-decomp-0.4.0.txt", function() {
 		$("#submit")
