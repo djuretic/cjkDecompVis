@@ -103,6 +103,7 @@ function update(character, baseId){
 		.charge(-400)
 		.nodes(nodes)
 		.links(links)
+		.linkDistance(function(d) { return 20 - 2*d.source.depth; })
 		.on("tick", tick)
 		.start();
 
