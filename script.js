@@ -2,7 +2,8 @@
 var width = 900,
 	height = 500,
 	decomp = {},
-	nodeRadius = 12,
+	nodeRadius = 16,
+	fontSize = 18,
 	animationDelay = 250;
 
 var svg, force;
@@ -60,8 +61,7 @@ function drawNodes(nodes){
 		.call(force.drag);
 
 	node.append("circle")
-		.attr("class", "circle")
-		.attr("r", nodeRadius);
+		.attr("class", "circle");
 
 	node.append("text")
 		.attr("class", "text")
@@ -71,11 +71,14 @@ function drawNodes(nodes){
 		.attr("class", "title");
 
 	nodeSel.select(".text")
+		.style("font-size", function(d) { return (fontSize - d.depth) + "px"; })
 		.text(function(d) { return d.hasChar ? d.character : "?"; });
 	nodeSel.select(".title")
 		.text(function(d){ return d.typeFull; });
 	nodeSel.select(".circle")
-		.attr("stroke", function(d) { return scale(d.type); });
+		.attr("stroke", function(d) { return scale(d.type); })
+		.attr("r", function(d) { return nodeRadius - d.depth; })
+		.style("stroke-width", function(d) { return d.depth === 0 ? "2px" : "1.2px"; });
 
 	nodeSel.exit()
 		.transition()
