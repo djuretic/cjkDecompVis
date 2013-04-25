@@ -93,19 +93,21 @@ function update(character, baseId){
 	var characterDecomp = getDecomposition(character, baseId);
 	var depth = getDepth(characterDecomp);
 
-	var tree = d3.layout.tree()
-		.size([width, Math.min(40*depth, height - 2*(nodeRadius+1)) ]);
+	var tree = d3.layout.tree();
 	var nodes = tree.nodes(characterDecomp);
+	nodes.forEach(function(n) { delete n.x; delete n.y; delete n.px; delete n.py; });
 	var links = tree.links(nodes);
 
 	force = d3.layout.force()
 		.size([width, height])
 		.charge(-400)
+		.friction(0.85)
 		.nodes(nodes)
 		.links(links)
 		.linkDistance(function(d) { return 20 - 2*d.source.depth; })
 		.on("tick", tick)
 		.start();
+	for (var i = 0; i < 100; i++) force.tick();
 
 	drawLinks(links);
 	drawNodes(nodes);
