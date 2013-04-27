@@ -6,8 +6,7 @@ var width = 900,
 	fontSize = 18,
 	animationDelay = 250;
 
-var svg, force;
-var link = d3.svg.line();
+var svg, force, nodeSel, linkSel;
 
 var scale = d3.scale.category10();
 
@@ -52,7 +51,7 @@ function drawLinks(links){
 }
 
 function drawNodes(nodes){
-	var nodeSel = svg.selectAll(".node")
+	nodeSel = svg.selectAll(".node")
 		.data(nodes, function(d){ return d.id; });
 
 	var node = nodeSel.enter()
@@ -114,12 +113,12 @@ function update(character, baseId){
 }
 
 function tick(){
-	svg.selectAll(".link")
-		.attr("x1", function(d) { return d.source.x; })
+	if(!linkSel || !nodeSel) return;
+	linkSel.attr("x1", function(d) { return d.source.x; })
 		.attr("y1", function(d) { return d.source.y; })
 		.attr("x2", function(d) { return d.target.x; })
 		.attr("y2", function(d) { return d.target.y; });
-	svg.selectAll(".node").attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+	nodeSel.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 }
 
 function getDepth(data){
