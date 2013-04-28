@@ -177,7 +177,7 @@ $(function(){
 	.attr("height", height)
 	.append("g");
 
-	new DataParser("cjk-decomp-0.4.0.txt", function() {
+	new DataParser("data/cjk-decomp-0.4.0.txt", function() {
 		$("#submit")
 			.prop('disabled', false)
 			.click(function() {	update($("#char").val()[0]); });
