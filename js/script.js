@@ -180,7 +180,10 @@ $(function(){
 	new DataParser("data/cjk-decomp-0.4.0.txt", function() {
 		$("#submit")
 			.prop('disabled', false)
-			.click(function() {	update($("#char").val()[0]); });
+			.click(function() {
+				update($("#char").val()[0]);
+				event.preventDefault();
+			});
 	}).parse();
 });
 
