@@ -1,5 +1,4 @@
-The MIT License (MIT)
-
+== Code ==
 Copyright (c) 2013 Dušan Juretić
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,3 +18,9 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
+== CJK Decomposition data ==
+CJK Decomposition Data File from http://cjkdecomp.codeplex.com/,
+used under a Creative Commons license:
+http://creativecommons.org/licenses/by-sa/3.0/
+@ 2012 Gavin Grover
