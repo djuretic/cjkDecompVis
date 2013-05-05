@@ -66,14 +66,16 @@ function drawNodes(nodes){
 		.attr("class", "text")
 		.attr("dy", ".3em");
 
-	node.append("title")
-		.attr("class", "title");
-
 	nodeSel.select(".text")
 		.style("font-size", function(d) { return (fontSize - d.depth) + "px"; })
-		.text(function(d) { return d.hasChar ? d.character : "?"; });
-	nodeSel.select(".title")
-		.text(function(d){ return d.typeFull; });
+		.text(function(d) { return d.hasChar ? d.character : "?"; })
+		.each(function(d) {
+			$(this).tooltip({
+				container: "body",
+				trigger: "hover",
+				title: d.typeFull
+			});
+		});
 	nodeSel.select(".circle")
 		.attr("stroke", function(d) { return scale(d.type); })
 		.attr("r", function(d) { return nodeRadius - d.depth; })
