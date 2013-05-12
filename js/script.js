@@ -174,14 +174,17 @@ DataParser.prototype.parseDecompositionData = function(data){
 };
 
 $(function(){
+	var submit = $("#submit");
+	submit.button("loading");
+
 	svg = d3.select("#svg").append("svg")
 	.attr("width", width)
 	.attr("height", height)
 	.append("g");
 
 	new DataParser("data/cjk-decomp-0.4.0.txt", function() {
-		$("#submit")
-			.prop('disabled', false)
+		submit
+			.button("reset")
 			.click(function() {
 				update($("#char").val()[0]);
 				event.preventDefault();
