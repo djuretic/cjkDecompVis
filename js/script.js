@@ -11,6 +11,22 @@ var svg, force, nodeSel, linkSel;
 var scale = d3.scale.category10();
 
 function getDecomposition(character, baseId){
+	function getDecompositionDescription(type){
+		// Texts taken from http://cjkdecomp.codeplex.com/wikipage?title=cjk-decomp&referringTitle=Home
+		desc = {
+			c : "Component",
+			m : "Modified",
+			w : "Second constituent contained within first",
+			b : "Second between first",
+			l : "Components locked together",
+			s : "First component surrounds second",
+			a : "Flows across",
+			d : "Flows downwards",
+			r : "Repeats and/or reflects"
+		};
+		return desc[type] || '';
+	}
+
 	var characterDecomp = decomp[character];
 	if(!characterDecomp){
 		return {
@@ -36,6 +52,7 @@ function getDecomposition(character, baseId){
 		character: character,
 		type: characterDecomp.type,
 		typeFull: characterDecomp.typeFull,
+		typeDescription: getDecompositionDescription(characterDecomp.type),
 		hasChar: character.length <= 1,
 		children: children
 	};
@@ -73,7 +90,7 @@ function drawNodes(nodes){
 			$(this).tooltip({
 				container: "body",
 				trigger: "hover",
-				title: d.typeFull
+				title: d.typeDescription + " (" + d.typeFull + ")"
 			});
 		});
 	nodeSel.select(".circle")
