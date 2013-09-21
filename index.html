@@ -42,10 +42,10 @@
 		<div class="row">
 			<div class="span12">
 				<h1>CJK Decomposition</h1>
-				<form class="form-inline">
+				<form class="form-inline" name="form" novalidate>
 					Enter character:
-					<input id="char" type="text" size="1" ng-model="hanzi" />
-					<input id="submit" class="btn" type="button" ng-click="update(hanzi)" value="{{button_label}}" ng-disabled="!dataLoaded()" data-loading-text="Loading..."/>
+					<input id="char" type="text" size="1" ng-model="hanzi" ng-maxlength="1" required/>
+					<button id="submit" class="btn" ng-click="update(hanzi)" ng-disabled="!dataLoaded() || form.$invalid">{{button_label}}</button>
 				</form>
 				<decomp-visualization/>
 			</div>
