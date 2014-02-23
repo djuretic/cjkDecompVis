@@ -3,6 +3,7 @@ var cjkApp = angular.module('cjkApp', []);
 cjkApp.controller('AppCtrl', function($scope) {
 	$scope.hanzi = '阿';
 	$scope.buttonLabel = 'Loading...';
+	$scope.history = [];
 	$scope.data = {};
 	$scope.dataLoaded = function() {
 		return $scope.data !== {};
@@ -14,8 +15,14 @@ cjkApp.controller('AppCtrl', function($scope) {
 		$scope.$apply();
 	}).parse();
 
-	$scope.update = function(hanzi){
+	$scope.update = function(hanzi, skipLog){
 		$scope.$broadcast('updateHanzi', hanzi);
+		if(!skipLog) {
+			$scope.history.push(hanzi);
+			if($scope.history.length > 10) {
+				$scope.history.shift();
+			}
+		}
 	}
 });
 
