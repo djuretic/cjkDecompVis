@@ -42,11 +42,26 @@
 		<div class="row">
 			<div class="span12">
 				<h1>CJK Decomposition</h1>
-				<form class="form-inline" name="form" novalidate>
-					Enter character:
-					<input id="char" type="text" size="1" ng-model="hanzi" ng-maxlength="1" required/>
-					<button id="submit" class="btn" ng-click="update(hanzi)" ng-disabled="!dataLoaded() || form.$invalid">{{button_label}}</button>
-				</form>
+				<div class="row">
+					<div class="span7">
+						<form class="form-inline" name="form" novalidate>
+							Enter character:
+							<input id="char" type="text" size="1" ng-model="hanzi" ng-maxlength="1" required/>
+							<button id="submit" class="btn" ng-click="update(hanzi)" ng-disabled="!dataLoaded() || form.$invalid">{{buttonLabel}}</button>
+						</form>
+					</div>
+					<div class="span1">
+						<div>History:</div>
+					</div>
+					<div class="span4">
+						<div ng-show="history.length > 0">
+							<ul class="inline">
+								<li ng-repeat="item in history"><a href="#" ng-click="update(item, true)">{{item}}</a></li>
+							</ul>
+						</div>
+						<div ng-hide="history.length > 0">- none -</div>
+					</div>
+				</div>
 				<decomp-visualization/>
 			</div>
 		</div>

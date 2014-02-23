@@ -104,7 +104,7 @@ function drawNodes(nodes){
 		.remove();
 }
 
-function update(character, baseId){
+function updateGraph(character, baseId){
 	baseId = typeof baseId !== 'undefined' ? baseId : 1;
 
 	var characterDecomp = getDecomposition(character, baseId);

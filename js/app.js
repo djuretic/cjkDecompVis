@@ -2,20 +2,27 @@ var cjkApp = angular.module('cjkApp', []);
 
 cjkApp.controller('AppCtrl', function($scope) {
 	$scope.hanzi = '阿';
-	$scope.button_label = 'Loading...';
+	$scope.buttonLabel = 'Loading...';
+	$scope.history = [];
 	$scope.data = {};
 	$scope.dataLoaded = function() {
 		return $scope.data !== {};
 	}
 
 	new DataParser("data/cjk-decomp-0.4.0.txt", function(data) {
-		$scope.button_label = 'Show';
+		$scope.buttonLabel = 'Show';
 		$scope.data = data;
 		$scope.$apply();
 	}).parse();
 
-	$scope.update = function(hanzi){
-		update(hanzi);
+	$scope.update = function(hanzi, skipLog){
+		$scope.$broadcast('updateHanzi', hanzi);
+		if(!skipLog) {
+			$scope.history.push(hanzi);
+			if($scope.history.length > 10) {
+				$scope.history.shift();
+			}
+		}
 	}
 });
 
@@ -30,6 +37,10 @@ cjkApp.directive('decompVisualization', function() {
 				.attr("width", width)
 				.attr("height", height)
 				.append("g");
+
+			scope.$on('updateHanzi', function(e, hanzi) {
+				updateGraph(hanzi);
+			});
 		}
 	}
 });
