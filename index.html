@@ -47,6 +47,8 @@
 						<form class="form-inline" name="form" novalidate>
 							Enter character:
 							<input id="char" type="text" size="1" ng-model="hanzi" ng-maxlength="1" required/>
+							Depth:
+							<input type="text" size="1" ng-model="decompositionDepth" ng-maxlength="2" required/>
 							<button id="submit" class="btn" ng-click="update(hanzi)" ng-disabled="!dataLoaded() || form.$invalid">{{buttonLabel}}</button>
 						</form>
 					</div>

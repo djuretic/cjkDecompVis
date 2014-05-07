@@ -5,6 +5,7 @@ cjkApp.controller('AppCtrl', function($scope) {
 	$scope.buttonLabel = 'Loading...';
 	$scope.history = [];
 	$scope.data = {};
+	$scope.decompositionDepth = 2;
 	$scope.dataLoaded = function() {
 		return $scope.data !== {};
 	}
@@ -16,7 +17,7 @@ cjkApp.controller('AppCtrl', function($scope) {
 	}).parse();
 
 	$scope.update = function(hanzi, skipLog){
-		$scope.$broadcast('updateHanzi', hanzi);
+		$scope.$broadcast('updateHanzi', hanzi, $scope.decompositionDepth);
 		if(!skipLog) {
 			$scope.history.push(hanzi);
 			if($scope.history.length > 10) {
@@ -38,8 +39,8 @@ cjkApp.directive('decompVisualization', function() {
 				.attr("height", height)
 				.append("g");
 
-			scope.$on('updateHanzi', function(e, hanzi) {
-				updateGraph(hanzi);
+			scope.$on('updateHanzi', function(e, hanzi, decompositionDepth) {
+				updateGraph(hanzi, decompositionDepth);
 			});
 		}
 	}

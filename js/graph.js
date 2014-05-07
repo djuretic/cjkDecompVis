@@ -9,7 +9,7 @@ var svg, force, nodeSel, linkSel;
 
 var scale = d3.scale.category10();
 
-function getDecomposition(character, baseId){
+function getDecomposition(character, baseId, maxDepth){
 	function getDecompositionDescription(type){
 		// Texts taken from http://cjkdecomp.codeplex.com/wikipage?title=cjk-decomp&referringTitle=Home
 		desc = {
@@ -27,7 +27,8 @@ function getDecomposition(character, baseId){
 	}
 
 	var characterDecomp = decomp[character];
-	if(!characterDecomp){
+	if(!characterDecomp || maxDepth <= 0){
+		// character doesn't have a decomposition
 		return {
 			id: baseId,
 			maxId: baseId,
@@ -40,7 +41,7 @@ function getDecomposition(character, baseId){
 	if(characterDecomp.components){
 		characterDecomp.components.forEach(function(component){
 			maxId++;
-			childDecomp = getDecomposition(component, maxId);
+			childDecomp = getDecomposition(component, maxId, maxDepth - 1);
 			maxId = childDecomp.maxId;
 			children.push(childDecomp);
 		});
@@ -104,10 +105,10 @@ function drawNodes(nodes){
 		.remove();
 }
 
-function updateGraph(character, baseId){
-	baseId = typeof baseId !== 'undefined' ? baseId : 1;
+function updateGraph(character, depth){
+	var baseId = typeof baseId !== 'undefined' ? baseId : 1;
 
-	var characterDecomp = getDecomposition(character, baseId);
+	var characterDecomp = getDecomposition(character, baseId, depth);
 	var depth = getDepth(characterDecomp);
 
 	var tree = d3.layout.tree();
