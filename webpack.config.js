@@ -2,9 +2,11 @@ const path = require("path");
 
 module.exports = {
 	entry: path.resolve(".", "src", "main.ts"),
+	// devtool: 'source-map',
 	output: {
 		path: 'dist',
-		filename: 'app.bundle.js'
+		filename: 'app.bundle.js',
+		publicPath: '/dist/'
 	},
 	resolve: {
 		extensions: ["", ".js", ".ts"],

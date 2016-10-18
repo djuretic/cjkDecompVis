@@ -32,7 +32,6 @@ export class AppComponent {
 
     update(hanzi: string, skipLog: boolean): void {
         this.graphHanzi = hanzi;
-        // $scope.$broadcast('updateHanzi', hanzi, this.decompositionDepth);
         if(!skipLog) {
             this.history.push(hanzi);
             if(this.history.length > 10) {
