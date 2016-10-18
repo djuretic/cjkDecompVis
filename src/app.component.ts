@@ -32,7 +32,8 @@ export class AppComponent {
 
     update(hanzi: string, skipLog: boolean): void {
         this.graphHanzi = hanzi;
-        if(!skipLog) {
+        let lastHanzi = this.history.length > 0 ? this.history[this.history.length-1] : '';
+        if(!skipLog && hanzi != lastHanzi) {
             this.history.push(hanzi);
             if(this.history.length > 10) {
                 this.history.shift();

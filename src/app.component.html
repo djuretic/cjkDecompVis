@@ -6,8 +6,8 @@
         <form class="form-inline" name="form" novalidate #charForm="ngForm">
           Enter character:
           <input id="char" name="char" type="text" size="1" [(ngModel)]="hanzi" [maxlength]="1" required/>
-          Depth:
-          <input type="text" name="depth" size="1" [(ngModel)]="decompositionDepth" [maxlength]="2" required/>
+          <!--Depth:
+          <input type="text" name="depth" size="1" [(ngModel)]="decompositionDepth" [maxlength]="2" required/>-->
           <button id="submit" class="btn" (click)="update(hanzi)" [disabled]="!dataLoaded() || !charForm.form.valid">{{buttonLabel}}</button>
         </form>
       </div>

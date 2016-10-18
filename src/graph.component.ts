@@ -46,7 +46,7 @@ export class GraphComponent {
   ngOnChanges(inputChanges: any): void {
     if(this.svg && inputChanges.hanzi){
       // TODO get the depth from the UI
-      this.updateGraph(this.hanzi, 2);
+      this.updateGraph(this.hanzi, 30);
     }
   }
 
