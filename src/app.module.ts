@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
+import { GraphComponent } from './graph.component';
 import { DecompositionService } from './decomposition.service';
 
 @NgModule({
@@ -12,8 +13,11 @@ import { DecompositionService } from './decomposition.service';
     FormsModule,
     HttpModule
   ],
-  declarations: [ AppComponent ],
+  declarations: [
+    AppComponent,
+    GraphComponent
+  ],
   providers: [ DecompositionService ],
   bootstrap: [ AppComponent ]
 })
-export class AppModule { }
+export class AppModule {}

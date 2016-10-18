@@ -10,6 +10,7 @@ import { DecompositionMap } from './decomposition-map';
 
 export class AppComponent {
     hanzi = '阿';
+    graphHanzi = '';
     buttonLabel = 'Loading...';
     history: string[] = [];
     data: DecompositionMap = {};
@@ -25,12 +26,12 @@ export class AppComponent {
       this.decompositionService.getDecomposition()
         .subscribe(decomposition => {
           this.buttonLabel = 'Show';
-          console.log(decomposition);
           this.data = decomposition;
         })
     }
 
     update(hanzi: string, skipLog: boolean): void {
+        this.graphHanzi = hanzi;
         // $scope.$broadcast('updateHanzi', hanzi, this.decompositionDepth);
         if(!skipLog) {
             this.history.push(hanzi);
