@@ -1,82 +1,54 @@
 <!DOCTYPE html>
 <html ng-app="cjkApp">
 <head>
-	<meta charset='utf-8'>
-	<title>CJK Decomposition</title>
-	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
-	<script type="text/javascript" src="js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="js/d3.v3.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
-	<script type="text/javascript" src="js/graph.js"></script>
-	<script type="text/javascript" src="js/parser.js"></script>
-	<script type="text/javascript" src="js/app.js"></script>
-	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-	<style>
-		.link{
-			fill: none;
-			stroke: #ccc;
-			stroke-width: 1.5px;
-		}
+  <meta charset='utf-8'>
+  <title>CJK Decomposition</title>
+  <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/d3.v3.min.js"></script>
+  <script type="text/javascript" src="js/graph.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <style>
+    .link{
+      fill: none;
+      stroke: #ccc;
+      stroke-width: 1.5px;
+    }
 
-		.circle{
-			fill: white;
-		}
+    .circle{
+      fill: white;
+    }
 
-		.text{
-			text-anchor: middle;
-			font-size: 15px;
-			cursor: default;
-		}
+    .text{
+      text-anchor: middle;
+      font-size: 15px;
+      cursor: default;
+    }
 
-		#char {
-			width: 16px;
-		}
+    #char {
+      width: 16px;
+    }
 
-		svg {
-			border: 1px solid #ddd;
-		}
-	</style>
+    svg {
+      border: 1px solid #ddd;
+    }
+  </style>
 </head>
 <body>
-	<div class="container" ng-controller="AppCtrl">
-		<div class="row">
-			<div class="span12">
-				<h1>CJK Decomposition</h1>
-				<div class="row">
-					<div class="span7">
-						<form class="form-inline" name="form" novalidate>
-							Enter character:
-							<input id="char" type="text" size="1" ng-model="hanzi" ng-maxlength="1" required/>
-							Depth:
-							<input type="text" size="1" ng-model="decompositionDepth" ng-maxlength="2" required/>
-							<button id="submit" class="btn" ng-click="update(hanzi)" ng-disabled="!dataLoaded() || form.$invalid">{{buttonLabel}}</button>
-						</form>
-					</div>
-					<div class="span1">
-						<div>History:</div>
-					</div>
-					<div class="span4">
-						<div ng-show="history.length > 0">
-							<ul class="inline">
-								<li ng-repeat="item in history"><a href="#" ng-click="update(item, true)">{{item}}</a></li>
-							</ul>
-						</div>
-						<div ng-hide="history.length > 0">- none -</div>
-					</div>
-				</div>
-				<decomp-visualization/>
-			</div>
-		</div>
-	</div>
-	<script>
-		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  <div class="container" ng-controller="AppCtrl">
+    <app>Loading...</app>
+    <script type="text/javascript" src="dist/app.bundle.js"></script>
+    </div>
+  </div>
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-		ga('create', 'UA-40845621-2');
-		ga('send', 'pageview');
-	</script>
+    ga('create', 'UA-40845621-2');
+    ga('send', 'pageview');
+  </script>
 </body>
 
 </html>

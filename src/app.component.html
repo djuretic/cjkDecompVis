@@ -1,0 +1,28 @@
+<div class="row">
+  <div class="span12">
+    <h1>CJK Decomposition</h1>
+    <div class="row">
+      <div class="span7">
+        <form class="form-inline" name="form" novalidate>
+          Enter character:
+          <input id="char" name="char" type="text" size="1" [(ngModel)]="hanzi" ng-maxlength="1" required/>
+          Depth:
+          <input type="text" name="depth" size="1" [(ngModel)]="decompositionDepth" ng-maxlength="2" required/>
+          <button id="submit" class="btn" (click)="update(hanzi)" ng-disabled="!dataLoaded() || form.$invalid">{{buttonLabel}}</button>
+        </form>
+      </div>
+      <div class="span1">
+        <div>History:</div>
+      </div>
+      <div class="span4">
+        <div *ngIf="history.length > 0">
+          <ul class="inline">
+            <li *ngFor="let item of history"><a href="#" (click)="update(item, true)">{{item}}</a></li>
+          </ul>
+        </div>
+        <div ng-hide="history.length > 0">- none -</div>
+      </div>
+    </div>
+    <!--<decomp-visualization/>-->
+  </div>
+</div>
