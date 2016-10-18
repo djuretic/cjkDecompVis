@@ -80,7 +80,7 @@ export class GraphComponent {
     let children: DecompositionNode[] = [],
       maxId = baseId;
     if(characterDecomp.components){
-      characterDecomp.components.forEach(function(component: string){
+      characterDecomp.components.forEach((component: string) => {
         maxId++;
         let childDecomp: DecompositionNode = this.getDecomposition(component, maxId, maxDepth - 1);
         maxId = childDecomp.maxId;
@@ -108,38 +108,38 @@ export class GraphComponent {
 
     var tree = d3.layout.tree();
     var nodes = tree.nodes(characterDecomp);
-    nodes.forEach(function(n: any) { delete n.x; delete n.y; delete n.px; delete n.py; });
+    nodes.forEach((n: any) => { delete n.x; delete n.y; delete n.px; delete n.py; });
     var links = tree.links(nodes);
 
-    let force = d3.layout.force()
+    this.force = d3.layout.force()
       .size([this.width, this.height])
       .charge(-400)
       .friction(0.85)
       .nodes(nodes)
       .links(links)
-      .linkDistance(function(d: any) { return 20 - 2*d.source.depth; })
-      .on("tick", this.tick)
+      .linkDistance((d: any) => (20 - 2*d.source.depth))
+      .on("tick", this.tick.bind(this))
       .start();
-    for (var i = 0; i < 100; i++) force.tick();
+    for (var i = 0; i < 100; i++) this.force.tick();
 
     this.drawLinks(links);
     this.drawNodes(nodes);
   }
 
-  drawLinks(links: any[]): void{
+  drawLinks(links: any): void{
     this.linkSel = this.svg.selectAll(".link")
-        .data(links, function(d: any){ return d.source.id + "-" + d.target.id; });
+        .data(links, (d: any) => { return d.source.id + "-" + d.target.id; });
     this.linkSel.enter()
       .insert("line", ":first-child")  //to avoid overlap with nodes
       .attr("class", "link");
     this.linkSel.exit().remove();
   }
 
-  drawNodes(nodes: any[]): void{
-    let nodeSel = this.svg.selectAll(".node")
-      .data(nodes, function(d: any){ return d.id; });
+  drawNodes(nodes: any): void{
+    this.nodeSel = this.svg.selectAll(".node")
+      .data(nodes, (d: any) => d.id );
 
-    var node = nodeSel.enter()
+    var node = this.nodeSel.enter()
       .append("g")
       .attr("class", "node")
       .call(this.force.drag);
@@ -151,10 +151,10 @@ export class GraphComponent {
       .attr("class", "text")
       .attr("dy", ".3em");
 
-    nodeSel.select(".text")
-      .style("font-size", function(d: any) { return (this.fontSize - d.depth) + "px"; })
-      .text(function(d: any) { return d.hasChar ? d.character : "?"; })
-      .each(function(d: any) {
+    this.nodeSel.select(".text")
+      .style("font-size", (d: any) => { return (this.fontSize - d.depth) + "px"; })
+      .text((d: any) => { return d.hasChar ? d.character : "?"; })
+      .each((d: any) => {
         // TODO enable tooltip
         // $(this).tooltip({
         //   container: "body",
@@ -162,12 +162,12 @@ export class GraphComponent {
         //   title: d.typeDescription + " (" + d.typeFull + ")"
         // });
       });
-    nodeSel.select(".circle")
-      .attr("stroke", function(d: any) { return this.scale(d.type); })
-      .attr("r", function(d: any) { return this.nodeRadius - d.depth; })
-      .style("stroke-width", function(d: any) { return d.depth === 0 ? "2px" : "1.2px"; });
+    this.nodeSel.select(".circle")
+      .attr("stroke", (d: any) => { return this.scale(d.type); })
+      .attr("r", (d: any) => { return this.nodeRadius - d.depth; })
+      .style("stroke-width", (d: any) => { return d.depth === 0 ? "2px" : "1.2px"; });
 
-    nodeSel.exit()
+    this.nodeSel.exit()
       .transition()
       .duration(this.animationDelay)
       .style("opacity", 0.1)
@@ -176,17 +176,17 @@ export class GraphComponent {
 
   tick(): void{
     if(!this.linkSel || !this.nodeSel) return;
-    this.linkSel.attr("x1", function(d: any) { return d.source.x; })
-      .attr("y1", function(d: any) { return d.source.y; })
-      .attr("x2", function(d: any) { return d.target.x; })
-      .attr("y2", function(d: any) { return d.target.y; });
-    this.nodeSel.attr("transform", function(d: any) { return "translate(" + d.x + "," + d.y + ")"; });
+    this.linkSel.attr("x1", (d: any) => { return d.source.x; })
+      .attr("y1", (d: any) => d.source.y)
+      .attr("x2", (d: any) => d.target.x)
+      .attr("y2", (d: any) => d.target.y);
+    this.nodeSel.attr("transform", (d: any) => { return "translate(" + d.x + "," + d.y + ")"; });
   }
 
   getDepth(data: DecompositionNode): number{
     if(!data.children || data.children.length === 0){
       return 1;
     }
-    return Math.max.apply(null, data.children.map(function(c) { return this.getDepth(c); })) + 1;
+    return Math.max.apply(null, data.children.map((c) => this.getDepth(c) )) + 1;
   }
 }
