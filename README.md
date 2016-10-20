@@ -12,6 +12,7 @@ Decomposition data by Gavin Grover.
 git clone https://github.com/djuretic/cjkDecompVis.git
 cd cjkDecompVis
 npm install
+./node_modules/.bin/typings install
 npm run build # or "npm run build:production" for minified build
 npm run start
 ```
