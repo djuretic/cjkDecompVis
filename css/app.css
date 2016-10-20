@@ -1,0 +1,31 @@
+.link{
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+.circle{
+  fill: white;
+}
+
+.text{
+  text-anchor: middle;
+  font-size: 15px;
+  cursor: default;
+}
+
+#char {
+  width: 16px;
+}
+
+svg {
+  border: 1px solid #ddd;
+}
+
+.header h1 {
+  display: inline-block;
+}
+
+.header a {
+  margin-left: 10px;
+}
