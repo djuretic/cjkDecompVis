@@ -43,13 +43,6 @@ export class GraphComponent {
         .append("g");
   }
 
-  ngOnChanges(inputChanges: any): void {
-    if(this.svg && inputChanges.hanzi){
-      // TODO get the depth from the UI
-      this.updateGraph(this.hanzi, 30);
-    }
-  }
-
   getDecomposition(character: string, baseId: number, maxDepth: number): DecompositionNode{
     let getDecompositionDescription = function(type: string): string {
       // Texts taken from http://cjkdecomp.codeplex.com/wikipage?title=cjk-decomp&referringTitle=Home
